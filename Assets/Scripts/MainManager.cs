@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -17,6 +19,7 @@ public class MainManager : MonoBehaviour
     private int m_Points;
     
     private bool m_GameOver = false;
+    [SerializeField] private Text highScoreText;
 
     
     // Start is called before the first frame update
@@ -36,6 +39,8 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+
+        DisplayHighScore();
     }
 
     private void Update()
@@ -57,6 +62,7 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                SaveHighScore();
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
@@ -72,5 +78,16 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+    }
+
+    void SaveHighScore()
+    {
+        DataManager.Instance.SaveHighScore(m_Points);
+    }
+
+    void DisplayHighScore()
+    {
+        DataManager.Instance.LoadHighScore();
+        highScoreText.text = "Best Score: " + DataManager.Instance.highScoreName + ": " + DataManager.Instance.highScore;
     }
 }
